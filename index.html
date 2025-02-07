@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Rose Day ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff6b95;
+            --secondary: #ffb7c5;
+            --accent: #ff4778;
+            --bg-gradient: linear-gradient(45deg, #ffe6eb, #ffd1dc, #ffe6eb);
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .main-title {
+            color: var(--accent);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: bounce 2s infinite;
+        }
+
+        .subtitle {
+            color: var(--primary);
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.5s;
+        }
+
+        .rose-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .rose {
+            position: relative;
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .rose:hover {
+            transform: scale(1.1);
+        }
+
+        .rose svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .message-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 1s forwards 1s;
+        }
+
+        .message {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            line-height: 1.6;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .heart {
+            position: fixed;
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: floatUp 4s ease-in-out forwards;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--translateX), -100vh) rotate(var(--rotate));
+                opacity: 0;
+            }
+        }
+
+        .rose.bloom {
+            animation: bloom 0.5s ease-out;
+        }
+
+        @keyframes bloom {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background: var(--accent);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .rose-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .message-card {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">Happy Rose Day! 🌹</h1>
+        <p class="subtitle">Spreading love and joy with every petal...</p>
+
+        <div class="rose-container" id="roseGarden"></div>
+
+        <div class="message-card">
+            <p class="message">
+                "Each rose I give you carries a piece of my heart,<br>
+                A symbol of love that shall never part.<br>
+                Like petals soft and colors bright,<br>
+                My love for you blooms day and night."
+            </p>
+            <button class="btn" onclick="addMoreRoses()">Add More Roses 🌹</button>
+            <button class="btn" onclick="spreadLove()">Spread Love ❤️</button>
+        </div>
+    </div>
+
+    <script>
+        function createRose(color = '#ff6b95') {
+            const rose = document.createElement('div');
+            rose.className = 'rose';
+            rose.innerHTML = `
+                <svg viewBox="0 0 100 100">
+                    <g transform="translate(50 50)">
+                        ${Array.from({length: 12}, (_, i) => {
+                            const angle = (i * 30) * Math.PI / 180;
+                            const scale = 0.8 + Math.random() * 0.4;
+                            return `
+                                <path 
+                                    d="M0 0 C10 -20 20 -20 0 -40 C-20 -20 -10 -20 0 0"
+                                    fill="${color}"
+                                    opacity="${0.7 + Math.random() * 0.3}"
+                                    transform="rotate(${i * 30}) scale(${scale})"
+                                />
+                            `;
+                        }).join('')}
+                        <circle r="5" fill="${color}"/>
+                    </g>
+                    <path d="M50 60 Q50 80 50 90" stroke="#2d5a27" stroke-width="3" fill="none"/>
+                    <path d="M50 75 Q60 75 55 70 Q50 65 50 75" fill="#4a7a44"/>
+                </svg>
+            `;
+            
+            rose.onclick = () => {
+                rose.classList.add('bloom');
+                createSparkles(rose);
+                createHearts(rose);
+                setTimeout(() => rose.classList.remove('bloom'), 500);
+            };
+            
+            return rose;
+        }
+
+        function createSparkles(element) {
+            for (let i = 0; i < 5; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.innerHTML = '✨';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                element.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+        }
+
+        function createHearts(element) {
+            const rect = element.getBoundingClientRect();
+            for (let i = 0; i < 3; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = (rect.left + rect.width / 2) + 'px';
+                heart.style.top = (rect.top + rect.height / 2) + 'px';
+                heart.style.setProperty('--translateX', (Math.random() * 100 - 50) + 'px');
+                heart.style.setProperty('--rotate', (Math.random() * 360) + 'deg');
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 4000);
+            }
+        }
+
+        function addMoreRoses() {
+            const garden = document.getElementById('roseGarden');
+            const colors = ['#ff6b95', '#ff4778', '#ff8da1', '#ff1493'];
+            for (let i = 0; i < 4; i++) {
+                const rose = createRose(colors[Math.floor(Math.random() * colors.length)]);
+                rose.style.opacity = '0';
+                rose.style.transform = 'scale(0.5)';
+                garden.appendChild(rose);
+                setTimeout(() => {
+                    rose.style.opacity = '1';
+                    rose.style.transform = 'scale(1)';
+                }, i * 200);
+            }
+        }
+
+        function spreadLove() {
+            const roses = document.querySelectorAll('.rose');
+            roses.forEach((rose, i) => {
+                setTimeout(() => {
+                    rose.click();
+                }, i * 200);
+            });
+        }
+
+        // Initialize with some roses
+        document.addEventListener('DOMContentLoaded', () => {
+            const garden = document.getElementById('roseGarden');
+            const colors = ['#ff6b95', '#ff4778', '#ff8da1', '#ff1493'];
+            for (let i = 0; i < 6; i++) {
+                const rose = createRose(colors[Math.floor(Math.random() * colors.length)]);
+                garden.appendChild(rose);
+            }
+        });
+    </script>
+</body>
+</html>
